@@ -104,8 +104,32 @@ for i in range (1, repetitions):
 
 print("TEST 5 passed! - multiple solve same matrix")
 
-
 # TEST 6
+# Matrix init function array argument changed later
+A6 = np.array([[1, 0, 2, 0],
+             [0, 3, 0, 4],
+             [5, 0, 6, 0],
+             [0, np.pi, 0, 7]])
+
+a6 = np.array([1, 3, 6, 7])
+b6 = np.array([2, 4])
+c6 = np.array([5, np.pi])
+
+v6 = np.array([1, 2, 3, 4])
+
+m6 = dTridiag(a1, b1, c1)
+
+dot1 = m6.dot(v6)
+
+b6 = np.array([22, 44])
+
+dot2 = m6.dot(v6)
+
+assert(np.allclose(dot1, dot2))
+
+print("TEST 6 passed! - init function array argument changed later")
+
+# TEST 7
 # Matrix dot function random tests
 numRange = 3000
 matrixSize = 300
@@ -129,10 +153,10 @@ for d in range(1, dRange):
 
         assert(np.allclose(A.dot(v), m.dot(v)))
 
-print("TEST 6 passed! - random dot tests")
+print("TEST 7 passed! - random dot tests")
 
 
-# TEST 7
+# TEST 8
 # Matrix solve (Ax = y) function random tests
 numRange = 3000
 matrixSize = 300
@@ -156,4 +180,4 @@ for d in range(1, dRange):
 
         assert(np.allclose(np.linalg.solve(A, y), m.solve(y)))
 
-print("TEST 7 passed! - random solve tests")
+print("TEST 8 passed! - random solve tests")
