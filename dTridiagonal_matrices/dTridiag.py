@@ -1,5 +1,4 @@
 import numpy as np
-import math
 
 class dTridiag:
     def __str__(self):
@@ -43,26 +42,24 @@ class dTridiag:
 
 
     def solve(self, y: np.ndarray):
+        x = np.zeros(self.main_len)
         y = y.astype(float)
-        temp = np.zeros(self.main_len)
-        ans = np.zeros(self.main_len)
+        z = y # makes code easier to understand without efficiency loss
 
-        # solve L * temp = y
+        # solve L * z = y
         beg = self.d
-        temp[ : beg] = y[ : beg]
         while beg < self.main_len:
             end = min(beg + self.d, self.main_len)
-            y[beg : end] -= self.L_subdiag[beg : end] * temp[beg - self.d : end - self.d]
-            temp[beg : end] = y[beg : end]
+            y[beg : end] -= self.L_subdiag[beg : end] * z[beg - self.d : end - self.d]
             beg = end
 
-        # solve U * ans = temp
+        # solve U * x = z
         end = self.main_len - self.d
-        ans[end : self.main_len] = temp[end : self.main_len] / self.U_diag[end : self.main_len]
+        x[end : self.main_len] = z[end : self.main_len] / self.U_diag[end : self.main_len]
         while end > 0:
             beg = max(end - self.d, 0)
-            temp[beg : end] -= self.U_hyperdiag[beg : end] * ans[beg + self.d : end + self.d]
-            ans[beg : end] = temp[beg : end] / self.U_diag[beg : end]
+            z[beg : end] -= self.U_hyperdiag[beg : end] * x[beg + self.d : end + self.d]
+            x[beg : end] = z[beg : end] / self.U_diag[beg : end]
             end = beg
         
-        return ans
+        return x
