@@ -35,6 +35,7 @@ class dTridiag:
 
 
     def dot(self, v: np.ndarray):
+        v = v.astype(float)
         result = self.diagonal * v
         result[ : self.side_len] += self.hyperdiagonal * v[self.d : ]
         result[self.d : ] += self.subdiagonal * v[ : self.side_len]
@@ -42,32 +43,26 @@ class dTridiag:
 
 
     def solve(self, y: np.ndarray):
-        # solve L * temp = y
-        L_subdiag = self.L_subdiag
-        temp = np.zeros(self.main_len)
         y = y.astype(float)
-        temp[0 : self.d] = y[0 : self.d]
+        temp = np.zeros(self.main_len)
+        ans = np.zeros(self.main_len)
 
+        # solve L * temp = y
         beg = self.d
+        temp[ : beg] = y[ : beg]
         while beg < self.main_len:
             end = min(beg + self.d, self.main_len)
-            y[beg : end] -= L_subdiag[beg : end] * temp[beg - self.d : end - self.d]
+            y[beg : end] -= self.L_subdiag[beg : end] * temp[beg - self.d : end - self.d]
             temp[beg : end] = y[beg : end]
             beg = end
 
         # solve U * ans = temp
-        # flip arrays to work top to bottom like the code above
-        U_diag = np.flip(self.U_diag)
-        U_hyperdiag = np.flip(self.U_hyperdiag)
-        temp = np.flip(temp)
-        ans = np.zeros(self.main_len)
-        ans[0 : self.d] = temp[0 : self.d] / U_diag[0 : self.d]
-
-        beg = self.d
-        while beg < self.main_len:
-            end = min(beg + self.d, self.main_len)
-            temp[beg : end] -= U_hyperdiag[beg : end] * ans[beg - self.d : end - self.d]
-            ans[beg : end] = temp[beg : end] / U_diag[beg : end]
-            beg = end
-
-        return np.flip(ans)
+        end = self.main_len - self.d
+        ans[end : self.main_len] = temp[end : self.main_len] / self.U_diag[end : self.main_len]
+        while end > 0:
+            beg = max(end - self.d, 0)
+            temp[beg : end] -= self.U_hyperdiag[beg : end] * ans[beg + self.d : end + self.d]
+            ans[beg : end] = temp[beg : end] / self.U_diag[beg : end]
+            end = beg
+        
+        return ans
