@@ -1,6 +1,7 @@
 import numpy as np
 
 class dTridiag:
+    # not required, but very useful to allow print()-ing the values
     def __str__(self):
         return f"dTridiag:\n \
             n:             {self.main_len}\n \
