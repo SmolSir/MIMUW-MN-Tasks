@@ -5,7 +5,7 @@
 import numpy as np
 from scipy.interpolate import BarycentricInterpolator as BI # wielomian interpolacyjne
 from scipy.interpolate import InterpolatedUnivariateSpline as Spline # splajn interpolacyjny
-import matplotlib.pyplot as plt
+from matplotlib import pyplot as plt
 
 ## Funkcja pomocnicza do animacji
 ## (na zajęciach było bez funkcji, na bieżąco modyfikowaliśmy skrypt
@@ -81,4 +81,3 @@ px = Spline(t,x,k=3)
 py = Spline(t,y,k=3)
 tgrid = np.linspace(0,t[-1],200)
 plt.plot(px(tgrid),py(tgrid),color="orange")
-
