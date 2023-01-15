@@ -33,12 +33,12 @@ class Givens:
         r = math.sqrt(pow(self.a, 2) + pow(self.b, 2))
         c =  self.a / r
         s = -self.b / r
-        
+
         print("L_apply: cos() | sin() = ", round(c, 4), "|", round(s, 4))
-        
+
         upper_row = np.copy(matrix[self.pos, : ])
         lower_row = np.copy(matrix[self.pos + 1, : ])
-        
+
         matrix[self.pos, : ] = upper_row * c - lower_row * s
         matrix[self.pos + 1, : ] = upper_row * s + lower_row * c
         return
@@ -102,36 +102,3 @@ class LZNK:
     def lstsq(self, b: np.ndarray):
         return solve_triangular(self.R[: self.cols, :],
                                 self.Q[: , : self.cols].T.dot(b))
-
-
-
-A = np.array([
-        [1, 0, 2, 0],
-        [0, 3, 0, 4],
-        [5, 0, 6, 0],
-        [5, 0, 6, 0],
-        [0, 2, 0, 7],
-        [1, 3, 6, 7],
-        [1, 0, 5, 1]
-    ]).astype(float)
-
-A_LZNK = LZNK(A)
-
-# print("before:\n", A_LZNK, "\n")
-# A_LZNK.addcol(np.array([1, 2, 3, 4, 5, 6, 7]))
-# print("after:\n", A_LZNK, "\n")
-# print("Q * R:\n", np.dot(A_LZNK.Q, A_LZNK.R).round(2))
-
-B = np.array([
-        [1],
-        [3],
-        [5]
-    ]).astype(float)
-
-B_LZNK = LZNK(B)
-b = np.array([2, 4, 6]).astype(float)
-print("before:\n", B_LZNK, "\n")
-print("Q * R:\n", np.dot(B_LZNK.Q, B_LZNK.R).round(2))
-B_LZNK.addcol(b)
-print("after:\n", B_LZNK, "\n")
-print("Q * R:\n", np.dot(B_LZNK.Q, B_LZNK.R).round(2))
