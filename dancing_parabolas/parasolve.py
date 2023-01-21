@@ -1,7 +1,6 @@
 import numpy as np
 import cmath
 
-PRINT_PRECISION = 4
 # Defining this as a const value is safer than typing the number 3 everywhere.
 THREE = 3
 
@@ -13,7 +12,6 @@ def parasolve(f, init, eps = 1e-3, N = 100):
     def __isclose(_x):
         return cmath.isclose(f(_x), complex(0), abs_tol = eps)
 
-
     # Helper function - given an array i = np.array([i_1, ..., i_n]) of indices
     # computes the divided difference f[x[i_1], x[i_2], ..., x[i_n]].
     def __div_diff(i: np.array):
@@ -21,7 +19,6 @@ def parasolve(f, init, eps = 1e-3, N = 100):
         for col in range(1, _n):
             _fx = (_fx[1 : ] - _fx[ : _n - col]) / (_x[col : ] - _x[ : _n - col])
         return _fx[0]
-
 
     # Helper function - compute the next term of the series in such a way that
     # division by zero is avoided (choose the non-zero denominator).
@@ -45,7 +42,6 @@ def parasolve(f, init, eps = 1e-3, N = 100):
             x3 = x[2] + complex(np.random.choice([-1, 1])) * fx[2]
 
         return x3
-
 
     # Assert that the provided init tuple is valid:
     assert len(init) == len(np.unique(init)) == THREE, \
