@@ -1,0 +1,182 @@
+\documentclass[12pt]{article}
+
+\usepackage{amssymb}
+\usepackage{graphicx}
+\usepackage{polski}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\usepackage{amsmath}
+\usepackage{amsfonts} 
+\allowdisplaybreaks
+\geometry{
+	a4paper,
+	margin=20mm
+}
+
+\usepackage{lastpage}
+\usepackage{fancyhdr}
+\usepackage{mathtools}
+\usepackage{bm}
+\usepackage[shortlabels]{enumitem}
+\usepackage{float}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{color}
+
+\definecolor{dkgreen}{rgb}{0,0.6,0}
+\definecolor{gray}{rgb}{0.5,0.5,0.5}
+\definecolor{mauve}{rgb}{0.58,0,0.82}
+
+\lstset{frame=tb,
+  language=C++,
+  aboveskip=3mm,
+  belowskip=3mm,
+  showstringspaces=false,
+  columns=flexible,
+  basicstyle={\small\ttfamily},
+  numbers=none,
+  numberstyle=\tiny\color{gray},
+  keywordstyle=\color{blue},
+  commentstyle=\color{dkgreen},
+  stringstyle=\color{mauve},
+  breaklines=true,
+  breakatwhitespace=true,
+  tabsize=3
+}
+
+\pagestyle{fancy}
+\fancyhf{}
+\renewcommand{\headrulewidth}{0pt}
+\cfoot{Strona \thepage\ z \pageref{LastPage}}
+
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\ZZ}{\mathbb{Z}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\KK}{\mathbb{K}}
+\newcommand{\QQ}{\mathbb{Q}}
+
+\newcommand{\0}{x_{n}}
+\newcommand{\1}{x_{n+1}}
+\newcommand{\2}{x_{n+2}}
+\newcommand{\3}{x_{n+3}}
+
+\newcommand\bigforall{\mbox{\Large $\mathsurround0pt\forall$}}
+\newcommand\bigexists{\mbox{\Large $\mathsurround0pt\exists$}}
+
+\begin{document}
+\begin{center}
+	{\Huge Metody numeryczne}\\[7pt]
+	Komentarz 3. zadania laboratoryjnego\\
+	Bartosz Smolarczyk
+\end{center}
+\begin{enumerate}[1.]
+\large\bf\item Wybór pierwiastka równania kwadratowego \boldsymbol{$\3$} \smallskip \\
+\normalfont
+\normalsize
+Przeprowadzone rozumowanie opieramy na wybranym w następnym punkcie wzorze $(4)$. \medskip \\
+Chcielibyśmy wybierać kolejne pierwiastki $\3$ tak, aby nie doprowadzić do sytuacji, w której dzielimy przez 0. Łatwo zauważyć, że może dojść do tego jedynie podczas \mbox{wyliczania} wartości $\mathcal{M} = C \mp \sqrt{\Delta}$ (pierwiastek z ujemnej liczby nie stanowi problemu przy \mbox{założeniu}, że obsługiwane są liczby zespolone). Mając to na uwadze, przyjmujemy \mbox{następującą} \mbox{politykę} wyboru $\3$:
+\begin{enumerate}[$\bullet$]
+\item Jeżeli $\mathcal{M} \neq 0$ dla obydwu pierwiastków, to wybieramy ten, który wartością jest bliżej $\frac{\0 + \1}{2}$,
+
+\item Jeżeli $\mathcal{M} = 0$ dla jednego z pierwiastków, to wybieramy ten, dla którego $\mathcal{M}  \neq 0$,
+
+\item Jeżeli $\mathcal{M} = 0$ dla obydwu pierwiastków, to losujemy z jednakowym prawdopodobieństwem $\mathcal{M} = -2 \vee \mathcal{M} = 2$. Co prawda wpływa to nieco na ostateczny wygląd ciągu, ale pozwala kontynuować iterację. Zauważmy, że wówczas wzór obliczeniowy upraszcza się do $\3 = \2 \pm f[\2]$.
+
+\end{enumerate}
+\bigskip
+\large\bf\item Wybór wzoru obliczeniowego wartości \boldsymbol{$\3$} \smallskip \\
+\normalfont
+\normalsize
+Wybieramy wzór obliczeniowy (4):
+$$
+\3 = \2 - \frac{2f[\2]}{C \mp \sqrt{\Delta}}
+$$
+Co prawda obliczenie kolejnego wyrazu ciągu wymaga tak samo jak we wzorze (3) wyznaczenia $C$ oraz $\Delta$, przez co jesteśmy zmuszeni obliczać wielokrotnie różnice dzielone i wykonywać przy tym wysoce niepożądane ze względu na niedokładności dzielenie. \mbox{Zauważmy} jednak, że w liczniku (4) występuje $f[\2] = f(\2)$, a nie tak jak w mianowniku (3) $f[\2,\1,\0]$. Pozwala nam to na ograniczenie liczby dzieleń wykonywanych w ramach jednej iteracji. Jako dodatkowy powód możemy przyjąć przeprowadzone testy - wzór ten cechował się mniejszą liczbą potrzebnych do znalezienia miejsca zerowego iteracji.\\
+
+\large\bf\item Obsługa liczb zespolonych \smallskip \\
+\normalfont
+\normalsize
+Zaimplementowana przy pomocy pakietu \texttt{cmath}.\\
+
+\large\bf\item Dowody równoważności \smallskip \\
+\normalfont
+\normalsize
+W poniższych przekształceniach pamiętamy z treści \mbox{zadania}, że zachodzi:
+\begin{align*}
+C &= f[\2, \1] + f[\2, \0] - f[\1, \0] \\[1ex]
+\Delta &= C^2 - 4f[\2]f[\2, \1, \0]
+\end{align*}
+\begin{enumerate}[$\bullet$]
+\pagebreak
+\newpage
+\item (1) $\Leftrightarrow$ (2) \medskip \\
+Za pomocą odpowiednich przekształceń pokażemy, że (1) = (2). Zapiszmy tę równość, od razu redukując składnik $f[\2]$:
+\begin{align*}
+&f[\2,\1] \cdot (x - \2) + f[\2, \1, \0] \cdot (x - \2)(x - \1) = \\[1ex]
+&= C(x - \2) + f[\2, \1, \0] \cdot (x - \2)^2 \\
+\Leftrightarrow & \\
+&f[\2, \1, \0] \cdot (x - \2)(x - \1) - f[\2, \1, \0] \cdot (x - \2)^2 = \\[1ex]
+&= C(x - \2) - f[\2,\1] \cdot (x - \2) \\
+\Leftrightarrow & \\
+&f[\2, \1, \0] \cdot (x - \2) \cdot \left( x - \1 - x + \2 \right) = \\[1ex]
+&= (x - \2) \cdot \left( C - f[\2, \1] \right) \\
+\Leftrightarrow & \\
+&f[\2, \1, \0] \cdot (x - \2) \cdot (\2 - \1) = \\[1ex]
+&= (x - \2) \cdot \left(f[\2, \1] + f[\2, \0] - f[\1, \0] - f[\2, \1] \right) \\
+\Leftrightarrow & \\
+& (x - \2) \cdot \frac{f[\1, \0] - f[\2, \1]}{\0 - \2} \cdot (\2 - \1) = \\[1ex]
+&= (x - \2) \cdot \left(f[\2, \0] - f[\1, \0]\right) \\
+\Leftrightarrow & \\
+& (x - \2) \cdot \frac{\frac{f[\0] - f[\1]}{\0 - \1} - \frac{f[\1] - f[\2]}{\1 - \2}}{\0 - \2} \cdot (\2 - \1) = \\[1ex]
+&= (x - \2) \cdot \left(\frac{f[\0] - f[\2]}{\0 - \2} - \frac{f[\0] - f[\1]}{\0 - \1} \right) \\
+\Leftrightarrow & \\
+& (x - \2) \cdot \frac{\frac{(f[\0] - f[\1]) \cdot (\1 - \2) - (f[\1] - f[\2]) \cdot (\0 - \1)}{(\0 - \1) \cdot (\1 - \2)}}{\0 - \2} \cdot (\2 - \1) = \\[1ex]
+&= (x - \2) \cdot \frac{(f[\0] - f[\2]) \cdot (\0 - \1) - (f[\0] - f[\1]) \cdot (\0 - \2)}{(\0 - \2) \cdot (\0 - \1)} \\
+\Leftrightarrow & \\
+& \scriptstyle (x - \2) \cdot \frac{(f[\0] - f[\1]) \cdot (\1 - \2) - (f[\1] - f[\2]) \cdot (\0 - \1)}{(\0 - \2) \cdot (\0 - \1) \cdot (\1 - \2)} \cdot (\2 - \1) \; = \\[1ex]
+&= \; \scriptstyle (x - \2) \cdot \frac{f[\0] \cdot \0 - f[\0] \cdot \1 - f[\2] \cdot \0 + f[\2] \cdot \1 - f[\0] \cdot \0 + f[\0] \cdot \2 + f[\1] \cdot \0 - f[\1] \cdot \2}{(\0 - \2) \cdot (\0 - \1)} \\
+&\text{redukujemy w pierwszym równaniu } (\1 - \2) \text{ z } (\2 - \1) \text{, pamiętając o} \\ 
+&\text{pomnożeniu licznika przez } (-1): \\
+\Leftrightarrow & \\
+& \scriptstyle (x - \2) \cdot \frac{(f[\1] - f[\2]) \cdot (\0 - \1) - (f[\0] - f[\1]) \cdot (\1 - \2)}{(\0 - \2) \cdot (\0 - \1)}\; = \\[1ex]
+&= \; \scriptstyle (x - \2) \cdot \frac{f[\0] \cdot \0  - f[\0] \cdot \0 - f[\0] \cdot \1 + f[\0] \cdot \2 + f[\1] \cdot \0 - f[\1] \cdot \2 - f[\2] \cdot \0 + f[\2] \cdot \1}{(\0 - \2) \cdot (\0 - \1)} \\
+\Leftrightarrow & \\
+& \scriptstyle (x - \2) \cdot \frac{f[\1] \cdot \0 - f[\1] \cdot \1 - f[\2] \cdot \0 + f[\2] \cdot \1 - f[\0] \cdot \1 + f[\0] \cdot \2 + f[\1] \cdot \1 - f[\1] \cdot \2}{(\0 - \2) \cdot (\0 - \1)}\; = \\[1ex]
+&= \; \scriptstyle (x - \2) \cdot \frac{- f[\0] \cdot \1 + f[\0] \cdot \2 + f[\1] \cdot \0 - f[\1] \cdot \2 - f[\2] \cdot \0 + f[\2] \cdot \1}{(\0 - \2) \cdot (\0 - \1)} \\
+\Leftrightarrow & \\
+& \scriptstyle (x - \2) \cdot \frac{ - f[\0] \cdot \1 + f[\0] \cdot \2 + f[\1] \cdot \0 - f[\1] \cdot \1 + f[\1] \cdot \1 - f[\1] \cdot \2 - f[\2] \cdot \0 + f[\2] \cdot \1}{(\0 - \2) \cdot (\0 - \1)}\; = \\[1ex]
+&= \; \scriptstyle (x - \2) \cdot \frac{f[\0] \cdot \2 - f[\0] \cdot \1 + f[\1] \cdot \0 - f[\1] \cdot \2 + f[\2] \cdot \1  - f[\2] \cdot \0}{(\0 - \2) \cdot (\0 - \1)} \\
+\Leftrightarrow & \\
+& \scriptstyle (x - \2) \cdot \frac{ - f[\0] \cdot \1 + f[\0] \cdot \2 + f[\1] \cdot \0 - f[\1] \cdot \2 - f[\2] \cdot \0 + f[\2] \cdot \1}{(\0 - \2) \cdot (\0 - \1)}\; = \\[1ex]
+&= \; \scriptstyle (x - \2) \cdot \frac{f[\0] \cdot (\2 - \1) + f[\1] \cdot (\0 - \2) + f[\2] \cdot (\1 - \0)}{(\0 - \2) \cdot (\0 - \1)} \\
+\Leftrightarrow & \\
+& \scriptstyle (x - \2) \cdot \frac{f[\0] \cdot \2 - f[\0] \cdot \1 + f[\1] \cdot \0 - f[\1] \cdot \2 + f[\2] \cdot \1 - f[\2] \cdot \0}{(\0 - \2) \cdot (\0 - \1)}\; = \\[1ex]
+&= \; \scriptstyle (x - \2) \cdot \frac{f[\0] \cdot (\2 - \1) + f[\1] \cdot (\0 - \2) + f[\2] \cdot (\1 - \0)}{(\0 - \2) \cdot (\0 - \1)} \\
+\Leftrightarrow & \\
+& (x - \2) \cdot \frac{f[\0] \cdot (\2 - \1) + f[\1] \cdot (\0 - \2) + f[\2] \cdot (\1 - \0)}{(\0 - \2) \cdot (\0 - \1)}\; = \\[1ex]
+&= (x - \2) \cdot \frac{f[\0] \cdot (\2 - \1) + f[\1] \cdot (\0 - \2) + f[\2] \cdot (\1 - \0)}{(\0 - \2) \cdot (\0 - \1)}
+\end{align*}\\
+Tym samym pokazaliśmy, że (1) $\Leftrightarrow$ (2). $\quad \square$
+\bigskip
+\bigskip
+\item (3) $\Leftrightarrow$ (4) \medskip \\
+Wymnażamy licznik i mianownik ułamka w równości (3) przez $(C \mp \sqrt{\Delta})$ (uwaga - zmiana znaków) i korzystamy z wzoru skróconego mnożenia na różnicę kwadratów:
+\begin{align*}
+\3 &= \2 - \frac{C \pm \sqrt{\Delta}}{2f[\2, \1, \0]} =\\[1ex]
+&= \2 - \frac{C \pm \sqrt{\Delta}}{2f[\2, \1, \0]} \cdot \frac{C \mp \sqrt{\Delta}}{C \mp \sqrt{\Delta}} =\\[1ex]
+&= \2 - \frac{C^2 - \Delta}{2f[\2, \1, \0] \cdot (C \mp \sqrt{\Delta})} =\\[1ex]
+&= \2 - \frac{C^2 - \left(C^2 - 4f[\2]f[\2, \1, \0]\right)}{2f[\2, \1, \0] \cdot (C \mp \sqrt{\Delta})} =\\[1ex]
+&= \2 - \frac{4f[\2]f[\2, \1, \0]}{2f[\2, \1, \0] \cdot (C \mp \sqrt{\Delta})} =\\[1ex]
+&= \2 - \frac{2f[\2]}{C \mp \sqrt{\Delta}} =\\[1ex]
+&= \3
+\end{align*}
+Tym samym pokazaliśmy, że (3) $\Leftrightarrow$ (4). $\quad \square$ \\\\\\
+\end{enumerate}
+\end{enumerate}
+\begin{figure}[h]
+\centering
+\href{https://www.youtube.com/watch?v=AGA_1HsP_C0&ab_channel=damaziom1}{\includegraphics[scale=0.25]{parabole.png}}
+\end{figure}
+\end{document}
+
